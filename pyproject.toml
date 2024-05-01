@@ -18,7 +18,7 @@ mypy = "^1.10.0"
 
 [build-system]
 requires = ["poetry-core"]
-build-backend = "maturin"
+build-backend = "poetry.core.masonry.api"
 
 [tool.maturin]
 # Bindings type
