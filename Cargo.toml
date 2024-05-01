@@ -1,0 +1,23 @@
+[package]
+name = "read_aconity_layers"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+glob = "*"
+ndarray = { version = "0.15.6", features = ["rayon"] }
+numpy = "*"
+pyo3 = { version = "0.18.1", features = ["extension-module"] }
+csv = "*"
+ndarray-csv = "*"
+rayon = "*"
+indicatif = "*"
+
+[tool.maturin]
+profile = "release"
+all-features = true
+manifest-path = "Cargo.toml"
