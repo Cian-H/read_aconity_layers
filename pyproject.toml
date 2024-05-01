@@ -2,6 +2,7 @@
 name = "read-aconity-layers"
 version = "0.1.0"
 description = "A utility for fast reading of layer data from the aconity mini powder bed fusion machine"
+urls = { github = "https://github.com/Cian-H/read_aconity_layers" }
 authors = ["Cian Hughes <chughes000@gmail.com>"]
 license = "MIT"
 readme = "README.md"
