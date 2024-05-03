@@ -162,7 +162,7 @@ mod rust_fn {
         out_array
     }
 
-    fn read_file(filepath: PathBuf) -> Result<(Array2<f64>, f64, usize), Box<dyn Error>> {
+    pub fn read_file(filepath: PathBuf) -> Result<(Array2<f64>, f64, usize), Box<dyn Error>> {
         let z: f64 = get_z(&filepath);
         let file = File::open(filepath)?;
         let mut rdr = ReaderBuilder::new()
@@ -191,5 +191,111 @@ mod rust_fn {
 
     fn correct_y(y: &mut f64) -> () {
         *y = (((*y + 16384.) * 0.009155273) - 91.) / 1.02;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::rust_fn;
+    use arbitrary::{Arbitrary, Result as ArbResult, Unstructured};
+    use arbtest::arbtest;
+    use float_cmp::{ApproxEq, F64Margin};
+    use ndarray::{Array2, Zip};
+    use std::fs::File;
+    use std::io::{BufWriter, Result as IOResult, Write};
+    use std::path::PathBuf;
+    use tempfile::{tempdir, TempDir};
+
+    const Z_SCALING: f64 = f64::MAX / 100.0;
+
+    #[derive(Debug)]
+    struct ExampleData {
+        z: f64,
+        ar: Array2<isize>,
+    }
+    impl<'a> Arbitrary<'a> for ExampleData {
+        fn arbitrary(u: &mut Unstructured<'a>) -> ArbResult<Self> {
+            // NOTE: We need to add 1 here, it len == 0 the test will fail
+            let len = 1 + u
+                .arbitrary_len::<(isize, isize, isize, isize)>()?
+                .min(usize::MAX - 1);
+            let ar =
+                Array2::from_shape_simple_fn((4, len), || isize::arbitrary(u).unwrap_or_default());
+            let z = f64::arbitrary(u)?.abs() / Z_SCALING;
+
+            Ok(ExampleData { z, ar })
+        }
+    }
+
+    #[derive(Debug)]
+    struct ReadResult {
+        z: f64,
+        ar: Array2<f64>,
+    }
+    impl From<ExampleData> for ReadResult {
+        fn from(value: ExampleData) -> ReadResult {
+            ReadResult {
+                z: value.z,
+                ar: value.ar.mapv(|x| x as f64),
+            }
+        }
+    }
+    impl ApproxEq for ReadResult {
+        type Margin = F64Margin;
+
+        fn approx_eq<T: Into<F64Margin>>(self, other: Self, margin: T) -> bool {
+            let margin = margin.into();
+
+            if !self.z.approx_eq(other.z, margin) {
+                return false;
+            } else if self.ar.shape() != other.ar.shape() {
+                return false;
+            } else {
+                Zip::from(&self.ar)
+                    .and(&other.ar)
+                    .fold(true, |acc, &a, &b| acc && a.approx_eq(b, margin))
+            }
+        }
+    }
+
+    fn write_array_to_pcd(file: File, array: &Array2<isize>) -> IOResult<()> {
+        let mut filebuf = BufWriter::new(file);
+
+        for row in array.rows().into_iter() {
+            let mut row_string = String::new();
+            for &item in row {
+                row_string.push_str(&format!("{} ", item));
+            }
+            row_string.pop(); // Remove the last space
+            writeln!(filebuf, "{}", row_string)?;
+        }
+
+        Ok(())
+    }
+
+    fn create_test_pcd(z: f64, ar: &Array2<isize>) -> IOResult<(TempDir, PathBuf)> {
+        let tmpd = tempdir()?;
+        let tmpfpath = tmpd.path().join(format!("{:.32}.pcd", z));
+        let tmpf = File::create(tmpfpath.clone())?;
+        write_array_to_pcd(tmpf, ar)?;
+        // tmpd needs to be returned or else it gets deleted when it goes out of scope
+        Ok((tmpd, tmpfpath))
+    }
+
+    #[test]
+    fn test_read_file() {
+        fn prop(u: &mut Unstructured<'_>) -> ArbResult<()> {
+            let data = ExampleData::arbitrary(u)?;
+            let (_tmpdir, tmpfpath) = create_test_pcd(data.z, &data.ar).unwrap();
+            let (ar_out, z_out, _) = rust_fn::read_file(tmpfpath).unwrap();
+            let actual_result = ReadResult {
+                z: z_out,
+                ar: ar_out,
+            };
+            let example_result: ReadResult = data.into();
+            assert!(example_result.approx_eq(actual_result, F64Margin::default()));
+            Ok(())
+        }
+        arbtest(prop);
     }
 }
