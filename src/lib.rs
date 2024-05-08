@@ -22,9 +22,7 @@ impl From<rust_fn::ReadError> for PyErr {
             rust_fn::ReadError::ParseFloatError(e) => {
                 PyErr::new::<exceptions::PyRuntimeError, _>(format!("{}", e))
             }
-            rust_fn::ReadError::MiscError(e) => {
-                PyErr::new::<exceptions::PyRuntimeError, _>(format!("{}", e))
-            }
+            rust_fn::ReadError::MiscError(e) => PyErr::new::<exceptions::PyRuntimeError, _>(e),
         }
     }
 }

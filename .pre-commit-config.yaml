@@ -3,7 +3,7 @@ default_language_version:
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.3.4
+    rev: v0.4.3
     hooks:
       - id: ruff
         types: [python]
@@ -12,7 +12,7 @@ repos:
         types: [python]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.9.0
+    rev: v1.10.0
     hooks:
       - id: mypy
         types: [python]
@@ -23,6 +23,12 @@ repos:
     hooks:
     - id: fmt
     - id: cargo-check
+
+  - repo: https://github.com/doublify/pre-commit-rust
+    rev: v1.0
+    hooks:
+    - id: fmt
+    - id: fmt
 
   - repo: https://github.com/python-poetry/poetry
     rev: "1.8.0"

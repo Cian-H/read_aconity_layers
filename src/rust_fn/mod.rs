@@ -36,8 +36,8 @@ pub fn read_layers(folder: &str) -> Result<Array2<f64>> {
     let mut glob_iterator = glob(glob_string.as_str())?
         .collect::<std::result::Result<Vec<PathBuf>, glob::GlobError>>()?;
     glob_iterator.par_sort_unstable_by(|a, b| {
-        let az = get_z(&a).expect("Filename parsing failed.");
-        let bz = get_z(&b).expect("Filename parsing failed.");
+        let az = get_z(a).expect("Filename parsing failed.");
+        let bz = get_z(b).expect("Filename parsing failed.");
         az.partial_cmp(&bz).expect("Filename sorting failed")
     });
     let len: usize = glob_iterator.len();
@@ -168,7 +168,7 @@ pub fn read_file(filepath: PathBuf) -> Result<(Array2<f64>, f64, usize)> {
     Ok((array_read, z, z_len))
 }
 
-pub fn get_z(filepath: &PathBuf) -> Result<f64> {
+pub fn get_z(filepath: &Path) -> Result<f64> {
     Ok(filepath
         .file_stem()
         .ok_or(ReadError::MiscError(format!(
@@ -182,11 +182,11 @@ pub fn get_z(filepath: &PathBuf) -> Result<f64> {
         .parse::<f64>()?)
 }
 
-pub fn correct_x(x: &mut f64) -> () {
+pub fn correct_x(x: &mut f64) {
     *x = -((((*x + 16384.) * 0.009155273) - 87.) / 1.01);
 }
 
-pub fn correct_y(y: &mut f64) -> () {
+pub fn correct_y(y: &mut f64) {
     *y = (((*y + 16384.) * 0.009155273) - 91.) / 1.02;
 }
 
