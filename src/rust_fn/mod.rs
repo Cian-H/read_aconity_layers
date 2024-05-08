@@ -1,20 +1,45 @@
 use csv::ReaderBuilder;
-use glob::{glob, GlobError};
+use glob::glob;
 use indicatif::ProgressBar;
 use ndarray::{concatenate, Array2, ArrayView2, Axis, Slice};
 use ndarray_csv::Array2Reader;
 use rayon::prelude::*;
-use std::error::Error;
 use std::fs::File;
 use std::path::{Path, PathBuf};
+use thiserror::Error;
 
-pub fn read_layers(folder: &str) -> Array2<f64> {
+#[derive(Error, Debug)]
+pub enum ReadError {
+    #[error("Glob error: {0}")]
+    Glob(#[from] glob::GlobError),
+
+    #[error("Glob pattern error: {0}")]
+    GlobPattern(#[from] glob::PatternError),
+
+    #[error("IO error: {0}")]
+    Io(#[from] std::io::Error),
+
+    #[error("NdarrayCSV error: {0}")]
+    NdarrayCSV(#[from] ndarray_csv::ReadError),
+
+    #[error("Float parse error: {0}")]
+    ParseFloatError(#[from] std::num::ParseFloatError),
+
+    #[error("Miscellaneous Error")]
+    MiscError(String),
+}
+
+pub type Result<T> = std::result::Result<T, ReadError>;
+
+pub fn read_layers(folder: &str) -> Result<Array2<f64>> {
     let glob_string: String = folder.to_owned() + "/*.pcd";
-    let mut glob_iterator: Vec<PathBuf> = glob(glob_string.as_str())
-        .expect("Files not found!")
-        .collect::<Result<Vec<PathBuf>, GlobError>>()
-        .unwrap();
-    glob_iterator.par_sort_unstable_by(|a, b| get_z(a).partial_cmp(&get_z(b)).unwrap());
+    let mut glob_iterator = glob(glob_string.as_str())?
+        .collect::<std::result::Result<Vec<PathBuf>, glob::GlobError>>()?;
+    glob_iterator.par_sort_unstable_by(|a, b| {
+        let az = get_z(&a).expect("Filename parsing failed.");
+        let bz = get_z(&b).expect("Filename parsing failed.");
+        az.partial_cmp(&bz).expect("Filename sorting failed")
+    });
     let len: usize = glob_iterator.len();
     let bar = ProgressBar::new(len as u64);
     let mut arrays: Vec<Array2<f64>> = vec![Array2::<f64>::zeros((0, 0)); len];
@@ -62,10 +87,10 @@ pub fn read_layers(folder: &str) -> Array2<f64> {
     out_array.column_mut(0).par_map_inplace(correct_x);
     out_array.column_mut(1).par_map_inplace(correct_y);
 
-    out_array
+    Ok(out_array)
 }
 
-pub fn read_selected_layers(file_list: Vec<PathBuf>) -> Array2<f64> {
+pub fn read_selected_layers(file_list: Vec<PathBuf>) -> Result<Array2<f64>> {
     let len: usize = file_list.len();
     let bar = ProgressBar::new(len as u64);
     let mut arrays: Vec<Array2<f64>> = vec![Array2::<f64>::zeros((0, 0)); len];
@@ -113,10 +138,10 @@ pub fn read_selected_layers(file_list: Vec<PathBuf>) -> Array2<f64> {
     out_array.column_mut(0).par_map_inplace(correct_x);
     out_array.column_mut(1).par_map_inplace(correct_y);
 
-    out_array
+    Ok(out_array)
 }
 
-pub fn read_layer(file: &str) -> Array2<f64> {
+pub fn read_layer(file: &str) -> Result<Array2<f64>> {
     let (array, z, z_len) = read_file(Path::new(file).to_path_buf()).unwrap();
     let z_array: Array2<f64> = Array2::from_elem((z_len, 1), z);
     let z_array_view: ArrayView2<f64> = z_array.view();
@@ -127,11 +152,11 @@ pub fn read_layer(file: &str) -> Array2<f64> {
     out_array.column_mut(0).par_map_inplace(correct_x);
     out_array.column_mut(1).par_map_inplace(correct_y);
 
-    out_array
+    Ok(out_array)
 }
 
-pub fn read_file(filepath: PathBuf) -> Result<(Array2<f64>, f64, usize), Box<dyn Error>> {
-    let z: f64 = get_z(&filepath);
+pub fn read_file(filepath: PathBuf) -> Result<(Array2<f64>, f64, usize)> {
+    let z: f64 = get_z(&filepath)?;
     let file = File::open(filepath)?;
     let mut rdr = ReaderBuilder::new()
         .has_headers(false)
@@ -143,14 +168,18 @@ pub fn read_file(filepath: PathBuf) -> Result<(Array2<f64>, f64, usize), Box<dyn
     Ok((array_read, z, z_len))
 }
 
-pub fn get_z(filepath: &PathBuf) -> f64 {
-    filepath
+pub fn get_z(filepath: &PathBuf) -> Result<f64> {
+    Ok(filepath
         .file_stem()
-        .unwrap()
+        .ok_or(ReadError::MiscError(format!(
+            "No file stem found for file {}",
+            filepath.to_str().ok_or(ReadError::MiscError(
+                "No filepath found... if this happens something very weird has happened".to_owned()
+            ))?
+        )))?
         .to_str()
-        .unwrap()
-        .parse::<f64>()
-        .unwrap()
+        .ok_or(ReadError::MiscError("Failed to parse filename".to_owned()))?
+        .parse::<f64>()?)
 }
 
 pub fn correct_x(x: &mut f64) -> () {

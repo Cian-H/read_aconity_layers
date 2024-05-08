@@ -16,6 +16,7 @@ ndarray-csv = "*"
 numpy = "*"
 pyo3 = { version = "0.18.1", features = ["extension-module"] }
 rayon = "*"
+thiserror = "1.0.60"
 
 [dev-dependencies]
 anyhow = "1.0.83"
