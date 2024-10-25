@@ -31,6 +31,7 @@ requires = ["maturin>=1.7,<2.0"]
 build-backend = "maturin"
 
 [tool.maturin]
+module-name = "read_aconity_layers"
 features = ["pyo3/extension-module"]
 
 [tool.ruff]
