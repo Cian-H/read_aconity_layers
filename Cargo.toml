@@ -4,6 +4,7 @@ version = "0.3.0"
 edition = "2021"
 
 [lib]
+name = "read_aconity_layers"
 path = "src/lib.rs"
 crate-type = ["cdylib"]
 
