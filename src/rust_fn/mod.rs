@@ -2,7 +2,6 @@ use csv::ReaderBuilder;
 use glob::glob;
 use indicatif::ProgressBar;
 use ndarray::{concatenate, Array2, ArrayView2, Axis, Slice};
-use ndarray_csv::Array2Reader;
 use rayon::prelude::*;
 use std::fs::File;
 use std::path::{Path, PathBuf};
@@ -19,8 +18,8 @@ pub enum ReadError {
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
 
-    #[error("NdarrayCSV error: {0}")]
-    NdarrayCSV(#[from] ndarray_csv::ReadError),
+    #[error("CSV error: {0}")]
+    CSV(#[from] csv::Error),
 
     #[error("Float parse error: {0}")]
     ParseFloatError(#[from] std::num::ParseFloatError),
@@ -158,14 +157,28 @@ pub fn read_layer(file: &str) -> Result<Array2<f64>> {
 pub fn read_file(filepath: PathBuf) -> Result<(Array2<f64>, f64, usize)> {
     let z: f64 = get_z(&filepath)?;
     let file = File::open(filepath)?;
-    let mut rdr = ReaderBuilder::new()
-        .has_headers(false)
-        .delimiter(b' ')
-        .from_reader(file);
-    let array_read: Array2<f64> = rdr.deserialize_array2_dynamic()?;
-    let z_len: usize = array_read.shape()[0];
+    let mut rdr = ReaderBuilder::new().has_headers(false).from_reader(file);
+    let data = rdr
+        .records()
+        .into_iter()
+        .collect::<std::result::Result<Vec<csv::StringRecord>, _>>()?
+        .iter()
+        .map(|x| {
+            x.iter()
+                .map(|y| y.parse::<f64>().map_err(|e| ReadError::ParseFloatError(e)))
+                .collect::<Result<Vec<f64>>>()
+        })
+        .collect::<Result<Vec<_>>>()?;
+    let length = data.len();
+    let width = data[0].len(); // WARNING: assumes fixed width columns!
+    let mut arr: Array2<f64> = Array2::zeros((length, width));
+    for (data_row, mut arr_row) in data.iter().zip(arr.axis_iter_mut(Axis(0))) {
+        for (data_i, arr_i) in data_row.iter().zip(arr_row.iter_mut()) {
+            *arr_i = *data_i
+        }
+    }
 
-    Ok((array_read, z, z_len))
+    Ok((arr, z, length))
 }
 
 pub fn get_z(filepath: &Path) -> Result<f64> {
@@ -220,13 +233,16 @@ mod tests {
     }
     impl<'a> Arbitrary<'a> for ExampleData {
         fn arbitrary(u: &mut Unstructured<'a>) -> ArbResult<Self> {
-            // NOTE: We need to add 1 here, it len == 0 the test will fail
+            // NOTE: We need to add 1 here, if len == 0 the test will fail
             let len = 1 + u
                 .arbitrary_len::<(isize, isize, isize, isize)>()?
                 .min(usize::MAX - 1);
             let ar =
                 Array2::from_shape_simple_fn((4, len), || isize::arbitrary(u).unwrap_or_default());
-            let z = f64::arbitrary(u)?.abs() / Z_SCALING;
+            // This is a clunky way to account for truncation of floats when writing filepath
+            let z = format!("{:.32}", f64::arbitrary(u)?.abs() / Z_SCALING)
+                .parse()
+                .map_err(|_| arbitrary::Error::IncorrectFormat)?;
 
             Ok(ExampleData { z, ar })
         }
@@ -291,8 +307,10 @@ mod tests {
     fn proptest_read_file() {
         fn prop(u: &mut Unstructured<'_>) -> ArbResult<()> {
             let data = ExampleData::arbitrary(u)?;
-            let (_tmpdir, tmpfpath) = create_test_pcd(data.z, &data.ar).unwrap();
-            let (ar_out, z_out, _) = rust_fn::read_file(tmpfpath).unwrap();
+            let (_tmpdir, tmpfpath) = create_test_pcd(data.z, &data.ar)
+                .map_err(|_e| arbitrary::Error::IncorrectFormat)?;
+            let (ar_out, z_out, _) =
+                rust_fn::read_file(tmpfpath).map_err(|_e| arbitrary::Error::IncorrectFormat)?;
             let actual_result = ReadResult {
                 z: z_out,
                 ar: ar_out,

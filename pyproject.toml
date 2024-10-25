@@ -1,3 +1,13 @@
+[project]
+name = "read-aconity-layers"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dynamic = ["version"]
+
 [tool.poetry]
 name = "read-aconity-layers"
 version = "0.2.0"
@@ -9,29 +19,19 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-maturin = "^1.5.1"
-numpy = "^1.26.4"
+maturin = "^1.7.4"
+numpy = "^2.1.2"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.4.2"
-mypy = "^1.10.0"
+ruff = "^0.7.1"
+mypy = "^1.13.0"
 
 [build-system]
-requires = ["maturin>=1.0,<2.0"]
+requires = ["maturin>=1.7,<2.0"]
 build-backend = "maturin"
 
 [tool.maturin]
-# Bindings type
-bindings = "pyo3"
-# Don't check for manylinux compliance
-skip-auditwheel = false
-# Python source directory
-# python-source = "src/mtpy"
-# Strip the library for minimum file size
-strip = true
-# Source distribution generator,
-# supports cargo (default) and git.
-sdist-generator = "cargo"
+features = ["pyo3/extension-module"]
 
 [tool.ruff]
 # Same as Black.
