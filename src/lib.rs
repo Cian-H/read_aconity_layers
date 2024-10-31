@@ -17,8 +17,14 @@ impl From<rust_fn::ReadError> for PyErr {
             }
             rust_fn::ReadError::Io(e) => PyErr::new::<exceptions::PyIOError, _>(format!("{}", e)),
             rust_fn::ReadError::CSV(e) => PyErr::new::<exceptions::PyIOError, _>(format!("{}", e)),
+            rust_fn::ReadError::ParseIntError(e) => {
+                PyErr::new::<exceptions::PyRuntimeError, _>(format!("{}", e))
+            }
             rust_fn::ReadError::ParseFloatError(e) => {
                 PyErr::new::<exceptions::PyRuntimeError, _>(format!("{}", e))
+            }
+            rust_fn::ReadError::ShapeError(e) => {
+                PyErr::new::<exceptions::PyIOError, _>(format!("{}", e))
             }
             rust_fn::ReadError::MiscError(e) => PyErr::new::<exceptions::PyRuntimeError, _>(e),
         }

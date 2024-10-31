@@ -21,8 +21,14 @@ pub enum ReadError {
     #[error("CSV error: {0}")]
     CSV(#[from] csv::Error),
 
-    #[error("Float parse error: {0}")]
+    #[error("Float int error: {0}")]
+    ParseIntError(#[from] std::num::ParseIntError),
+
+    #[error("Float float error: {0}")]
     ParseFloatError(#[from] std::num::ParseFloatError),
+
+    #[error("Shape error: {0}")]
+    ShapeError(#[from] ndarray::ShapeError),
 
     #[error("Miscellaneous Error")]
     MiscError(String),
@@ -80,8 +86,7 @@ pub fn read_layers(folder: &str) -> Result<Array2<f64>> {
                 .unwrap()
                 .slice_axis(Axis(1), Slice::from(2..4)),
         ],
-    )
-    .unwrap();
+    )?;
 
     out_array.column_mut(0).par_map_inplace(correct_x);
     out_array.column_mut(1).par_map_inplace(correct_y);
@@ -100,15 +105,16 @@ pub fn read_selected_layers(file_list: Vec<PathBuf>) -> Result<Array2<f64>> {
         .zip(arrays.par_iter_mut())
         .zip(z_vals.par_iter_mut())
         .zip(z_lens.par_iter_mut())
-        .for_each(
-            |(((filepath, array_element), z_vals_element), z_lens_element)| {
-                let (array, z, z_len) = read_file(filepath.to_path_buf()).unwrap();
+        .try_for_each(
+            |(((filepath, array_element), z_vals_element), z_lens_element)| -> Result<()> {
+                let (array, z, z_len) = read_file(filepath.to_path_buf())?;
                 *array_element = array;
                 *z_vals_element = z;
                 *z_lens_element = z_len;
-                bar.inc(1)
+                bar.inc(1);
+                Ok(())
             },
-        );
+        )?;
 
     let mut padding_arrays: Vec<Array2<f64>> = Vec::<Array2<f64>>::new();
     for (z, z_len) in z_vals.iter().zip(z_lens) {
@@ -131,8 +137,7 @@ pub fn read_selected_layers(file_list: Vec<PathBuf>) -> Result<Array2<f64>> {
                 .unwrap()
                 .slice_axis(Axis(1), Slice::from(2..4)),
         ],
-    )
-    .unwrap();
+    )?;
 
     out_array.column_mut(0).par_map_inplace(correct_x);
     out_array.column_mut(1).par_map_inplace(correct_y);
@@ -141,12 +146,12 @@ pub fn read_selected_layers(file_list: Vec<PathBuf>) -> Result<Array2<f64>> {
 }
 
 pub fn read_layer(file: &str) -> Result<Array2<f64>> {
-    let (array, z, z_len) = read_file(Path::new(file).to_path_buf()).unwrap();
+    let (array, z, z_len) = read_file(Path::new(file).to_path_buf())?;
     let z_array: Array2<f64> = Array2::from_elem((z_len, 1), z);
     let z_array_view: ArrayView2<f64> = z_array.view();
     let array_view: ArrayView2<f64> = array.view();
 
-    let mut out_array = concatenate(Axis(1), &[array_view, z_array_view]).unwrap();
+    let mut out_array = concatenate(Axis(1), &[array_view, z_array_view])?;
 
     out_array.column_mut(0).par_map_inplace(correct_x);
     out_array.column_mut(1).par_map_inplace(correct_y);
@@ -157,7 +162,10 @@ pub fn read_layer(file: &str) -> Result<Array2<f64>> {
 pub fn read_file(filepath: PathBuf) -> Result<(Array2<f64>, f64, usize)> {
     let z: f64 = get_z(&filepath)?;
     let file = File::open(filepath)?;
-    let mut rdr = ReaderBuilder::new().has_headers(false).from_reader(file);
+    let mut rdr = ReaderBuilder::new()
+        .delimiter(b' ')
+        .has_headers(false)
+        .from_reader(file);
     let data = rdr
         .records()
         .into_iter()
@@ -165,8 +173,8 @@ pub fn read_file(filepath: PathBuf) -> Result<(Array2<f64>, f64, usize)> {
         .iter()
         .map(|x| {
             x.iter()
-                .map(|y| y.parse::<f64>().map_err(|e| ReadError::ParseFloatError(e)))
-                .collect::<Result<Vec<f64>>>()
+                .map(|y| y.parse::<i64>().map_err(|e| ReadError::ParseIntError(e)))
+                .collect::<Result<Vec<i64>>>()
         })
         .collect::<Result<Vec<_>>>()?;
     let length = data.len();
@@ -174,7 +182,7 @@ pub fn read_file(filepath: PathBuf) -> Result<(Array2<f64>, f64, usize)> {
     let mut arr: Array2<f64> = Array2::zeros((length, width));
     for (data_row, mut arr_row) in data.iter().zip(arr.axis_iter_mut(Axis(0))) {
         for (data_i, arr_i) in data_row.iter().zip(arr_row.iter_mut()) {
-            *arr_i = *data_i
+            *arr_i = *data_i as f64
         }
     }
 
