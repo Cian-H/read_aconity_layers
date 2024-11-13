@@ -1,5 +1,4 @@
 from concurrent.futures import ThreadPoolExecutor
-from enum import Enum
 import numpy as np
 from pathlib import Path
 import pytest
@@ -9,7 +8,7 @@ import subprocess
 TEST_ARRAY = np.arange(
     np.iinfo(np.int32).min,
     np.iinfo(np.int32).max,
-    256, # Limited to ~256MB uncompressed for practicality
+    256,  # Limited to ~256MB uncompressed for practicality
 ).reshape((-1, 4))
 N_FILES = 1024
 TEST_ZVALS = np.arange(0, 10_240, 10_240 // (N_FILES - 1))
