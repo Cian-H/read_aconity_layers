@@ -42,10 +42,10 @@ where
 }
 
 #[pyfunction]
-fn read_selected_layers<'py>(
-    _py: Python<'py>,
+fn read_selected_layers(
+    _py: Python<'_>,
     file_list: Vec<String>,
-) -> PyResult<Bound<'py, PyArray2<f64>>> {
+) -> PyResult<Bound<'_, PyArray2<f64>>> {
     let path_list = file_list
         .iter()
         .map(|x| Path::new(x).to_path_buf())
@@ -56,7 +56,7 @@ fn read_selected_layers<'py>(
 }
 
 #[pyfunction]
-fn read_layer<'py>(_py: Python<'py>, file: String) -> PyResult<Bound<'py, PyArray2<f64>>> {
+fn read_layer(_py: Python<'_>, file: String) -> PyResult<Bound<'_, PyArray2<f64>>> {
     let rs_result = rust_fn::read_layer(&file)?;
     let py_result = rs_result.to_pyarray_bound(_py);
     Ok(py_result)

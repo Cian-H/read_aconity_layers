@@ -177,12 +177,11 @@ pub fn read_file(filepath: PathBuf) -> Result<(Array2<f64>, f64, usize)> {
         .from_reader(file);
     let data = rdr
         .records()
-        .into_iter()
         .collect::<std::result::Result<Vec<csv::StringRecord>, _>>()?
         .iter()
         .map(|x| {
             x.iter()
-                .map(|y| y.parse::<i64>().map_err(|e| ReadError::ParseIntError(e)))
+                .map(|y| y.parse::<i64>().map_err(ReadError::ParseIntError))
                 .collect::<Result<Vec<i64>>>()
         })
         .collect::<Result<Vec<_>>>()?;
