@@ -1,7 +1,7 @@
 use csv::ReaderBuilder;
 use glob::glob;
 use indicatif::ProgressBar;
-use ndarray::{concatenate, Array2, ArrayView2, Axis, Slice};
+use ndarray::{concatenate, stack, Array1, Array2, ArrayView1, ArrayView2, Axis, Slice};
 use rayon::prelude::*;
 use std::fs::File;
 use std::path::{Path, PathBuf};
@@ -147,11 +147,20 @@ pub fn read_selected_layers(file_list: Vec<PathBuf>) -> Result<Array2<f64>> {
 
 pub fn read_layer(file: &str) -> Result<Array2<f64>> {
     let (array, z, z_len) = read_file(Path::new(file).to_path_buf())?;
-    let z_array: Array2<f64> = Array2::from_elem((z_len, 1), z);
-    let z_array_view: ArrayView2<f64> = z_array.view();
+    let z_array: Array1<f64> = Array1::from_elem(z_len, z);
+    let z_array_view: ArrayView1<f64> = z_array.view();
     let array_view: ArrayView2<f64> = array.view();
 
-    let mut out_array = concatenate(Axis(1), &[array_view, z_array_view])?;
+    let mut out_array = stack(
+        Axis(1),
+        &[
+            array_view.column(0),
+            array_view.column(1),
+            z_array_view,
+            array_view.column(2),
+            array_view.column(3),
+        ],
+    )?;
 
     out_array.column_mut(0).par_map_inplace(correct_x);
     out_array.column_mut(1).par_map_inplace(correct_y);
