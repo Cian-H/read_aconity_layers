@@ -9,12 +9,14 @@ on:
 jobs:
   build-python:
 
+    name: Build python package for ${{ matrix.os }} with Python ${{ matrix.python-version }} via Poetry ${{ matrix.poetry-version }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.11", "3.12", "3.13"]
         os: [ubuntu-latest, windows-latest]
+        poetry-version: ["latest"]
 
     steps:
     - uses: actions/checkout@v4
@@ -26,15 +28,16 @@ jobs:
       if: ${{ env.ACT }}
       run: |
         apt-get update && apt-get install sudo -y cargo
+    - name: Run poetry image
+      uses: abatilo/actions-poetry@v2
+      with:
+        poetry-version: ${{ matrix.poetry-version }}
     - name: Install python dependencies
       run: |
-        python -m pip install --upgrade pip
-        python -m pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        poetry install
     - name: Build rust package
       run: |
-        maturin build
-        python -m pip install target/wheels/*.whl
+        poetry run maturin develop
     - name: Test with pytest
       run: |
-        pytest
+        poetry run pytest
