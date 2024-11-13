@@ -25,6 +25,8 @@ numpy = ">=2.0.0,<3.0.0"
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.7.1"
 mypy = "^1.13.0"
+pytest = "^8.3.3"
+loguru = "^0.7.2"
 
 [build-system]
 requires = ["maturin>=1.7,<2.0"]
@@ -35,10 +37,8 @@ module-name = "read_aconity_layers"
 features = ["pyo3/extension-module"]
 
 [tool.ruff]
-# Same as Black.
 line-length = 100
-# Assume Python 3.11
-target-version = "py311"
+target-version = "py312"
 exclude = ["docs/", "tests/"]
 
 [tool.ruff.lint]
@@ -201,6 +201,6 @@ check_untyped_defs = true
 ignore_missing_imports = true
 exclude = ["docs/", "tests/"]
 
-[[tool.mypy.overrides]]
-module = ["flet.*", "flet_core.*", "fsspec.*"]
-ignore_missing_imports = true
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".venv/bin/python"]

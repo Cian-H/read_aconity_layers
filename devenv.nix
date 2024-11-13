@@ -8,7 +8,13 @@
   packages = with pkgs; [
     act
     git
+    ruff
   ];
+
+  env.NIX_LD_LIBRARY_PATH = lib.makeLibraryPath (with pkgs; [
+    stdenv.cc.cc
+  ]);
+  env.NIX_LD = lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker";
 
   languages = {
     python = {

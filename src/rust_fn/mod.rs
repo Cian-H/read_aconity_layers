@@ -240,7 +240,7 @@ mod tests {
     use tempfile::{tempdir, TempDir};
     use xz::read::XzDecoder;
 
-    const TEST_DATA_FILE: &str = "tests/data.tar.xz";
+    const TEST_DATA_FILE: &str = "tests/correct.tar.xz";
     const Z_SCALING: f64 = f64::MAX / 100.0;
 
     #[derive(Debug)]
