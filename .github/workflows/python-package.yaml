@@ -11,6 +11,7 @@ jobs:
 
     name: Build python package for ${{ matrix.os }} with Python ${{ matrix.python-version }} via Poetry ${{ matrix.poetry-version }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
