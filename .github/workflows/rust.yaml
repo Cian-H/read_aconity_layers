@@ -25,7 +25,11 @@ jobs:
       run: |
         apt-get update && apt-get install sudo -y cargo
     - name: Build
+      with:
+        python-version: "3.12"
       run: cargo build --verbose
     - name: Run tests
+      with:
+        python-version: "3.12"
       run: cargo test --verbose
 
