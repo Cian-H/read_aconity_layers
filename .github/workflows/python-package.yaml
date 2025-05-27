@@ -30,7 +30,7 @@ jobs:
       run: |
         apt-get update && apt-get install sudo -y cargo
     - name: Run poetry image
-      uses: abatilo/actions-poetry@v2
+      uses: abatilo/actions-poetry@v4
       with:
         poetry-version: ${{ matrix.poetry-version }}
     - name: Install python dependencies
