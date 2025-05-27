@@ -14,7 +14,7 @@ glob = "*"
 indicatif = "*"
 ndarray = { version = "0.16.1", features = ["rayon"] }
 numpy = "0.22.0"
-pyo3 = { version = "0.22.5", features = ["abi3-py311", "extension-module"] }
+pyo3 = { version = "0.25.0", features = ["abi3-py311", "extension-module"] }
 rayon = "*"
 thiserror = "1.0.60"
 
