@@ -6,7 +6,8 @@ build:
     python: "3.13"
   jobs:
     pre_install:
-      - apt install -y cargo
+      - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      - source ~/.cargo/env
 
 sphinx:
    configuration: docs/conf.py
