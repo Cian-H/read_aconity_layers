@@ -3,10 +3,10 @@
     "devenv": {
       "locked": {
         "dir": "src/modules",
-        "lastModified": 1731407985,
+        "lastModified": 1748361913,
         "owner": "cachix",
         "repo": "devenv",
-        "rev": "9d3bf4d4c3fef89d2b6b29ebd64047a29ee932ea",
+        "rev": "b510085f1ca92779782d1e3de631b2292a30edb2",
         "type": "github"
       },
       "original": {
@@ -34,10 +34,10 @@
     "flake-compat_2": {
       "flake": false,
       "locked": {
-        "lastModified": 1696426674,
+        "lastModified": 1747046372,
         "owner": "edolstra",
         "repo": "flake-compat",
-        "rev": "0f9255e01c2351cc7d116c072cb317785dd33b33",
+        "rev": "9100a0f413b0c601e0533d1d94ffd501ce2e7885",
         "type": "github"
       },
       "original": {
@@ -89,10 +89,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1716977621,
+        "lastModified": 1746807397,
         "owner": "cachix",
         "repo": "devenv-nixpkgs",
-        "rev": "4267e705586473d3e5c8d50299e71503f16a6fb6",
+        "rev": "c5208b594838ea8e6cca5997fbf784b7cca1ca90",
         "type": "github"
       },
       "original": {
@@ -110,10 +110,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1730716553,
+        "lastModified": 1746223523,
         "owner": "cachix",
         "repo": "nixpkgs-python",
-        "rev": "8fcdb8ec34a1c2bae3f5326873a41b310e948ccc",
+        "rev": "3f5f1dbe0122a1741907aa5ab76f7337ffcd2ccb",
         "type": "github"
       },
       "original": {
