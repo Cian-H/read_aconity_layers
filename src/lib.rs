@@ -37,7 +37,7 @@ where
     ArrayBase<OwnedRepr<f64>, Ix2>: ToPyArray<Item = f64, Dim = Ix2>,
 {
     let rs_result = rust_fn::read_layers(folder)?;
-    let py_result = rs_result.to_pyarray_bound(_py);
+    let py_result = rs_result.to_pyarray(_py);
     Ok(py_result)
 }
 
@@ -51,14 +51,14 @@ fn read_selected_layers(
         .map(|x| Path::new(x).to_path_buf())
         .collect();
     let rs_result = rust_fn::read_selected_layers(path_list)?;
-    let py_result = rs_result.to_pyarray_bound(_py);
+    let py_result = rs_result.to_pyarray(_py);
     Ok(py_result)
 }
 
 #[pyfunction]
 fn read_layer(_py: Python<'_>, file: String) -> PyResult<Bound<'_, PyArray2<f64>>> {
     let rs_result = rust_fn::read_layer(&file)?;
-    let py_result = rs_result.to_pyarray_bound(_py);
+    let py_result = rs_result.to_pyarray(_py);
     Ok(py_result)
 }
 
