@@ -49,6 +49,7 @@ jobs:
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
           manylinux: auto
       - name: Build free-threaded wheels
+        if: ${{ !contains(matrix.platform.runner, 'windows') }} # Excluding because free thread build fails on windows
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
