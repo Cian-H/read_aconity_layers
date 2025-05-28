@@ -14,5 +14,7 @@ build:
     create_environment:
       - poetry lock
       - poetry install --with dev,docs
+      - poetry run maturin develop
     install:
-      - export PATH="$PATH:$HOME/.asdf/installs/rust/1.86.0/bin" && poetry run sphinx-build -b html docs $READTHEDOCS_OUTPUT/html
+      - export PATH="$PATH:$HOME/.asdf/installs/rust/1.86.0/bin"
+      - poetry run sphinx-build -b html docs $READTHEDOCS_OUTPUT/html
