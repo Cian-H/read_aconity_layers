@@ -19,7 +19,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-maturin = "^1.7.4"
+maturin = "^1.8.6"
 numpy = ">=2.0.0,<3.0.0"
 
 [tool.poetry.group.dev.dependencies]
