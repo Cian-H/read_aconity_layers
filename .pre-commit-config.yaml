@@ -32,11 +32,23 @@ repos:
     - id: poetry-lock
     - id: poetry-export
       args: ["-f", "requirements.txt", "-o", "./requirements.txt"]
+    - id: poetry-export
+      name: poetry-export-docs
+      args: ["-f", "requirements.txt", "--with", "docs", "-o", "./docs/requirements.txt"]
+
+  - repo: local
+    hooks:
+    - id: build-readme
+      name: build-readme
+      entry: |
+        bash -c 'cat docs/readme_top.rst docs/readme_bottom.rst > README.rst'
+      language: system
+      files: 'docs/readme*.rst'
 
   - repo: local
     hooks:
     - id: version-bump-check
-      name: check version bump
+      name: version-bump-check
       entry: |
         bash -c '
           current_version=$(grep "^version = " Cargo.toml | sed "s/version = \"\(.*\)\"/\1/");
