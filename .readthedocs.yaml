@@ -12,6 +12,7 @@ build:
       - asdf global poetry latest
       - cargo install sphinx-rustdocgen
     create_environment:
+      - poetry lock
       - poetry install --with dev,docs
     install:
       - poetry run sphinx-build -b html docs docs/_build/html
