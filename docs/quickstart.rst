@@ -1,17 +1,20 @@
-Quickstart Guide
-================
+##################
+ Quickstart Guide
+##################
 
-This guide will get you up and running with ``read_aconity_layers`` in just a few minutes.
+This guide will get you up and running with ``read_aconity_layers`` in
+just a few minutes.
 
-Basic Usage
------------
+*************
+ Basic Usage
+*************
 
 Reading All Layers from a Directory
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+===================================
 
 The most common use case is reading all layer files from a directory:
 
-.. code-block:: python
+.. code:: python
 
    import read_aconity_layers as ral
    import numpy as np
@@ -24,29 +27,25 @@ The most common use case is reading all layer files from a directory:
    print(f"Columns: [x, y, z, data1, data2]")
 
 Reading Specific Files
-~~~~~~~~~~~~~~~~~~~~~~
+======================
 
 If you want to read only specific layer files:
 
-.. code-block:: python
+.. code:: python
 
    import read_aconity_layers as ral
 
    # List of specific files to read
-   files = [
-       "/path/to/0.1.pcd",
-       "/path/to/0.2.pcd",
-       "/path/to/0.3.pcd"
-   ]
+   files = ["/path/to/0.1.pcd", "/path/to/0.2.pcd", "/path/to/0.3.pcd"]
 
    data = ral.read_selected_layers(files)
 
 Reading a Single Layer
-~~~~~~~~~~~~~~~~~~~~~~
+======================
 
 For processing individual layers:
 
-.. code-block:: python
+.. code:: python
 
    import read_aconity_layers as ral
 
@@ -58,27 +57,28 @@ For processing individual layers:
    y_coords = layer_data[:, 1]
    z_coords = layer_data[:, 2]
 
-Working with the Data
----------------------
+***********************
+ Working with the Data
+***********************
 
 Understanding the Data Format
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=============================
 
 All functions return NumPy arrays with 5 columns:
 
-* **Column 0**: X coordinates (corrected)
-* **Column 1**: Y coordinates (corrected)
-* **Column 2**: Z coordinates (layer height)
-* **Column 3**: Original data column 3
-* **Column 4**: Original data column 4
+-  **Column 0**: X coordinates (corrected)
+-  **Column 1**: Y coordinates (corrected)
+-  **Column 2**: Z coordinates (layer height)
+-  **Column 3**: Original data column 3
+-  **Column 4**: Original data column 4
 
-The X and Y coordinates are automatically corrected using the calibration
-formulas built into the library.
+The X and Y coordinates are automatically corrected using the
+calibration formulas built into the library.
 
 Example: Basic Data Analysis
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+============================
 
-.. code-block:: python
+.. code:: python
 
    import read_aconity_layers as ral
    import numpy as np
@@ -98,15 +98,15 @@ Example: Basic Data Analysis
 
    plt.figure(figsize=(10, 6))
    plt.plot(unique_z, layer_counts)
-   plt.xlabel('Layer Height (Z)')
-   plt.ylabel('Number of Points')
-   plt.title('Points per Layer')
+   plt.xlabel("Layer Height (Z)")
+   plt.ylabel("Number of Points")
+   plt.title("Points per Layer")
    plt.show()
 
 Example: Processing by Layer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+============================
 
-.. code-block:: python
+.. code:: python
 
    import read_aconity_layers as ral
    import numpy as np
@@ -123,55 +123,59 @@ Example: Processing by Layer
        layer_points = data[layer_mask]
 
        stats = {
-           'z': z,
-           'point_count': len(layer_points),
-           'x_mean': layer_points[:, 0].mean(),
-           'y_mean': layer_points[:, 1].mean(),
-           'data1_mean': layer_points[:, 3].mean(),
-           'data2_mean': layer_points[:, 4].mean(),
+           "z": z,
+           "point_count": len(layer_points),
+           "x_mean": layer_points[:, 0].mean(),
+           "y_mean": layer_points[:, 1].mean(),
+           "data1_mean": layer_points[:, 3].mean(),
+           "data2_mean": layer_points[:, 4].mean(),
        }
        layer_stats.append(stats)
 
    # Convert to structured array for easier analysis
    layer_stats = np.array(layer_stats)
 
-Performance Tips
-----------------
+******************
+ Performance Tips
+******************
 
 Parallel Processing
-~~~~~~~~~~~~~~~~~~~
+===================
 
 The library automatically uses parallel processing for multiple files.
 For best performance:
 
-* Use ``read_layers()`` for directories with many files
-* The library will automatically use all available CPU cores
-* Larger numbers of files will see better speedup
+-  Use ``read_layers()`` for directories with many files
+-  The library will automatically use all available CPU cores
+-  Larger numbers of files will see better speedup
 
 Memory Usage
-~~~~~~~~~~~~
+============
 
 For very large datasets:
 
-* Consider processing files in batches if memory is limited
-* Use ``read_selected_layers()`` to process subsets
-* The library streams data efficiently, but the final arrays are held in memory
+-  Consider processing files in batches if memory is limited
+-  Use ``read_selected_layers()`` to process subsets
+-  The library streams data efficiently, but the final arrays are held
+   in memory
 
 File Organization
-~~~~~~~~~~~~~~~~~
+=================
 
 For optimal performance:
 
-* Keep layer files in a single directory when using ``read_layers()``
-* Use consistent naming (the Z coordinate is extracted from the filename)
-* Ensure files are properly formatted space-delimited text
+-  Keep layer files in a single directory when using ``read_layers()``
+-  Use consistent naming (the Z coordinate is extracted from the
+   filename)
+-  Ensure files are properly formatted space-delimited text
 
-Error Handling
---------------
+****************
+ Error Handling
+****************
 
 The library provides detailed error messages for common issues:
 
-.. code-block:: python
+.. code:: python
 
    import read_aconity_layers as ral
 
@@ -182,9 +186,11 @@ The library provides detailed error messages for common issues:
    except RuntimeError as e:
        print(f"Processing error: {e}")
 
-Next Steps
-----------
+************
+ Next Steps
+************
 
-* Check out the full :doc:`python/index` for detailed function documentation
-* See :doc:`development` if you want to contribute to the project
-* For performance-critical applications, review the :doc:`rust/index`
+-  Check out the full :doc:`python/index` for detailed function
+   documentation
+-  See :doc:`development` if you want to contribute to the project
+-  For performance-critical applications, review the :doc:`rust/index`

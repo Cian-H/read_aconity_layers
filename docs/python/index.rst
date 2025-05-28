@@ -1,25 +1,30 @@
-Python API Reference
-====================
+######################
+ Python API Reference
+######################
 
-This section contains the complete Python API reference for ``read_aconity_layers``.
+This section contains the complete Python API reference for
+``read_aconity_layers``.
 
-Module
------------
+********
+ Module
+********
 
 .. automodule:: read_aconity_layers
    :members:
    :undoc-members:
    :show-inheritance:
 
-Return Type Information
------------------------
+*************************
+ Return Type Information
+*************************
 
-The library includes comprehensive type stubs for full IDE support and type checking.
+The library includes comprehensive type stubs for full IDE support and
+type checking.
 
 All functions return NumPy arrays with the following structure:
 
-* **Column 0**: X coordinates (corrected)
-* **Column 1**: Y coordinates (corrected)
-* **Column 2**: Z coordinates (layer height)
-* **Column 3**: Pyrometer 1 readings
-* **Column 4**: Pyrometer 2 readings
+-  **Column 0**: X coordinates (corrected)
+-  **Column 1**: Y coordinates (corrected)
+-  **Column 2**: Z coordinates (layer height)
+-  **Column 3**: Pyrometer 1 readings
+-  **Column 4**: Pyrometer 2 readings
