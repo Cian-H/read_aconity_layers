@@ -1,0 +1,44 @@
+name: Auto Version Tagging
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  tag-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract Version from Cargo.toml
+        id: get_version
+        uses: sravinet/[email protected]
+        with:
+          file: "Cargo.toml"
+          field: "package.version"
+
+      - name: Check if Tag Exists
+        id: check_tag
+        run: |
+          VERSION=v${{ steps.get_version.outputs.value }}
+          if git rev-parse "$VERSION" >/dev/null 2>&1; then
+            echo "TAG_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "TAG_EXISTS=false" >> $GITHUB_ENV
+          fi
+
+      - name: Create and Push Git Tag
+        if: env.TAG_EXISTS == 'false'
+        run: |
+          VERSION=v${{ steps.get_version.outputs.value }}
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "$VERSION"
+          git push origin "$VERSION"
