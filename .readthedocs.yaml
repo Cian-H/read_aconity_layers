@@ -7,7 +7,7 @@ build:
     rust: "1.86"
   jobs:
     pre_install:
-    - cargo install sphinx-rustdocgen
+    - poetry run maturin develop
 
 sphinx:
    configuration: docs/conf.py
