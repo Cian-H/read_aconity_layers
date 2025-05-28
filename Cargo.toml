@@ -13,7 +13,7 @@ csv = "*"
 glob = "*"
 indicatif = "*"
 ndarray = { version = "0.16.1", features = ["rayon"] }
-numpy = "0.22.0"
+numpy = "0.25.0"
 pyo3 = { version = "0.22.5", features = ["abi3-py311", "extension-module"] }
 rayon = "*"
 thiserror = "2.0.12"
