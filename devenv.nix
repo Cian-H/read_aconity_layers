@@ -7,6 +7,7 @@
 }: {
   packages = with pkgs; [
     act
+    cargo-bump
     git
     ruff
   ];
@@ -18,7 +19,7 @@
 
   languages = {
     python = {
-      version = "3.12";
+      version = "3.13";
       enable = true;
       poetry = {
         enable = true;
