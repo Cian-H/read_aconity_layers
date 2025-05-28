@@ -1,22 +1,28 @@
 [project]
 name = "read_aconity_layers"
+version = "0.4.2"
+description = "A utility for fast reading of layer data from the aconity mini powder bed fusion machine"
 requires-python = ">=3.11"
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dynamic = ["version"]
+authors = [{ name = "Cian Hughes", email = "chughes000@gmail.com" }]
+license = { text = "MIT" }
+readme = "README.md"
+
+[project.urls]
+github = "https://github.com/Cian-H/read_aconity_layers"
 
 [tool.poetry]
 name = "read_aconity_layers"
 version = "0.4.2"
 description = "A utility for fast reading of layer data from the aconity mini powder bed fusion machine"
-urls = { github = "https://github.com/Cian-H/read_aconity_layers" }
 authors = ["Cian Hughes <chughes000@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-packages = [{ include = "read_aconity_layers" }]
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
