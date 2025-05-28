@@ -32,3 +32,23 @@ repos:
     - id: poetry-lock
     - id: poetry-export
       args: ["-f", "requirements.txt", "-o", "./requirements.txt"]
+
+  - repo: local
+    hooks:
+    - id: version-bump-check
+      name: check version bump
+      entry: |
+        bash -c '
+          current_version=$(grep "^version = " Cargo.toml | sed "s/version = \"\(.*\)\"/\1/");
+          git fetch origin main 2>/dev/null || true;
+          remote_version=$(git show origin/main:Cargo.toml 2>/dev/null | grep "^version = " | sed "s/version = \"\(.*\)\"/\1/" || echo "0.0.0");
+          if [ "$current_version" = "$remote_version" ]; then
+            echo "❌ Version must be bumped before push! Run: cargo bump patch|minor|major";
+            echo "Local: $current_version, Remote: $remote_version";
+            exit 1;
+          fi;
+          echo "✅ Version bumped: $remote_version -> $current_version"
+        '
+      language: system
+      files: 'Cargo\.toml$'
+      stages: [pre-push]
