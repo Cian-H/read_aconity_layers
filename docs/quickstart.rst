@@ -51,7 +51,7 @@ For processing individual layers:
    import read_aconity_layers as ral
 
    # Read just one layer file
-   layer_data = ral.read_layer("/path/to/single_layer.pcd")
+   layer_data = ral.read_layer("/path/to/0.01.pcd")
 
    # Extract coordinates
    x_coords = layer_data[:, 0]

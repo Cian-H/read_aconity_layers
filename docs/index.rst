@@ -1,4 +1,4 @@
-read_aconity_layers Documentation
+read_aconity_layers
 ==================================
 
 A utility for fast reading of layer data from the aconity mini powder bed fusion machine.
@@ -38,11 +38,11 @@ Quick Example
    data = ral.read_layers("/path/to/layer/files/")
    
    # Read specific layer files
-   files = ["/path/to/layer1.pcd", "/path/to/layer2.pcd"]
+   files = ["/path/to/0.01.pcd", "/path/to/0.02.pcd"]
    data = ral.read_selected_layers(files)
    
    # Read a single layer
-   layer = ral.read_layer("/path/to/layer.pcd")
+   layer = ral.read_layer("/path/to/0.01.pcd")
 
 Indices and tables
 ==================
