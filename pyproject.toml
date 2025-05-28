@@ -9,7 +9,7 @@ classifiers = [
 ]
 authors = [{ name = "Cian Hughes", email = "chughes000@gmail.com" }]
 license = { text = "MIT" }
-readme = "README.md"
+readme = "README.rst"
 dynamic = ["version"]
 
 [project.urls]
