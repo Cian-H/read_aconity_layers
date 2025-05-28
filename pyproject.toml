@@ -1,6 +1,5 @@
 [project]
 name = "read_aconity_layers"
-version = "0.4.2"
 description = "A utility for fast reading of layer data from the aconity mini powder bed fusion machine"
 requires-python = ">=3.11"
 classifiers = [
@@ -11,13 +10,13 @@ classifiers = [
 authors = [{ name = "Cian Hughes", email = "chughes000@gmail.com" }]
 license = { text = "MIT" }
 readme = "README.md"
+dynamic = ["version"]
 
 [project.urls]
 github = "https://github.com/Cian-H/read_aconity_layers"
 
 [tool.poetry]
 name = "read_aconity_layers"
-version = "0.4.2"
 description = "A utility for fast reading of layer data from the aconity mini powder bed fusion machine"
 authors = ["Cian Hughes <chughes000@gmail.com>"]
 license = "MIT"
