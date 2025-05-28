@@ -32,9 +32,6 @@ repos:
     - id: poetry-lock
     - id: poetry-export
       args: ["-f", "requirements.txt", "-o", "./requirements.txt"]
-    - id: poetry-export
-      name: poetry-export-docs
-      args: ["-f", "requirements.txt", "--with", "docs", "-o", "./docs/requirements.txt"]
 
   - repo: local
     hooks:
