@@ -27,6 +27,7 @@ flexbuffers = "25.2.10"
 float-cmp = "0.10.0"
 ndarray = { version = "0.16.1", features = ["rayon", "serde"] }
 serde = "1.0.200"
+sphinx-rustdocgen = "0.8.1"
 tar = "0.4.40"
 tempfile = "3.10.1"
 xz = "0.1.0"

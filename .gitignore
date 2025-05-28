@@ -83,6 +83,7 @@ instance/
 .scrapy
 
 # Sphinx documentation
+docs/rust/crates
 docs/_build/
 
 # PyBuilder

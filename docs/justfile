@@ -1,0 +1,50 @@
+# Justfile for Sphinx documentation
+
+sphinxopts := ""
+sphinxbuild := "poetry run sphinx-build"
+sourcedir := "."
+builddir := "./_build"
+
+# Default recipe - equivalent to "just" without arguments
+default: help
+
+# Show help
+help:
+    @{{sphinxbuild}} -M help "{{sourcedir}}" "{{builddir}}" {{sphinxopts}}
+
+# Build the Rust extension first (required for autodoc)
+build-extension:
+    @echo "Checking Rust toolchain..."
+    @which cargo > /dev/null || (echo "Error: Rust/Cargo not found. Please install Rust toolchain." && exit 1)
+    cd .. && poetry run maturin develop
+
+# Clean build directory
+clean:
+    rm -rf {{builddir}}/*
+
+# Build HTML documentation
+html: build-extension
+    {{sphinxbuild}} -b html "{{sourcedir}}" "{{builddir}}/html" {{sphinxopts}}
+    @echo
+    @echo "Build finished. The HTML pages are in {{builddir}}/html."
+
+# Build and serve documentation locally
+serve: html
+    @echo "Serving documentation at http://localhost:8000"
+    cd {{builddir}}/html && python -m http.server 8000
+
+# Build documentation with live reload (requires sphinx-autobuild)
+livehtml: build-extension
+    poetry run sphinx-autobuild "{{sourcedir}}" "{{builddir}}/html" {{sphinxopts}}
+
+# Check for broken links
+linkcheck:
+    {{sphinxbuild}} -b linkcheck "{{sourcedir}}" "{{builddir}}/linkcheck" {{sphinxopts}}
+
+# Build all formats
+all: html
+
+# Catch-all recipe for Sphinx targets (equivalent to Make's % target)
+# Usage: just sphinx <target> [options]
+sphinx target *options="":
+    @{{sphinxbuild}} -M {{target}} "{{sourcedir}}" "{{builddir}}" {{sphinxopts}} {{options}}
