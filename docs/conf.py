@@ -5,10 +5,16 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+def get_release() -> str:
+    import subprocess
+    pkgid = subprocess.run(["cargo", "pkgid"], capture_output=True).stdout.decode().strip()
+    release_start = pkgid.rfind("#") + 1
+    return pkgid[release_start:]
+
 project = "RAL"
 copyright = "2024, Cian Hughes"
 author = "Cian Hughes"
-release = "0.4.3"
+release = get_release()
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
