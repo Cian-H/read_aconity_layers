@@ -17,17 +17,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Extract Version from Cargo.toml
-        id: get_version
-        uses: sravinet/[email protected]
+      - name: Get package version
+        id: info
+        uses: rabbitson87/get-cargo-package-info@v1
         with:
-          file: "Cargo.toml"
-          field: "package.version"
+          package: |
+            version
 
       - name: Check if Tag Exists
         id: check_tag
         run: |
-          VERSION=v${{ steps.get_version.outputs.value }}
+          VERSION=${{ fromJson(steps.info.outputs.object).package.version }}
           if git rev-parse "$VERSION" >/dev/null 2>&1; then
             echo "TAG_EXISTS=true" >> $GITHUB_ENV
           else
@@ -37,7 +37,7 @@ jobs:
       - name: Create and Push Git Tag
         if: env.TAG_EXISTS == 'false'
         run: |
-          VERSION=v${{ steps.get_version.outputs.value }}
+          VERSION=${{ fromJson(steps.info.outputs.object).package.version }}
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git tag "$VERSION"
