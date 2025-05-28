@@ -5,7 +5,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "read_aconity_layers"
+project = "RAL"
 copyright = "2024, Cian Hughes"
 author = "Cian Hughes"
 release = "0.4.3"
