@@ -22,8 +22,9 @@ read_aconity_layers
 .. image:: https://readthedocs.org/projects/read-aconity-layers/badge/?version=latest
         :target: https://read-aconity-layers.readthedocs.io/en/latest/?badge=latest
 
-.. image:: https://coveralls.io/repos/github/Cian-H/read-aconity-layers/badge.svg?branch=main
-        :target: https://coveralls.io/github/Cian-H/read-aconity-layers?branch=main
+.. image:: https://coveralls.io/repos/github/Cian-H/read_aconity_layers/badge.svg?branch=main
+:target: https://coveralls.io/github/Cian-H/read_aconity_layers?branch=main
+
 
 .. image:: https://img.shields.io/badge/code%20style-Ruff-D7FF64.svg
         :target: https://github.com/astral-sh/ruff
