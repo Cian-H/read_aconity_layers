@@ -16,6 +16,7 @@ urls = { github = "https://github.com/Cian-H/read_aconity_layers" }
 authors = ["Cian Hughes <chughes000@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+packages = [{ include = "read_aconity_layers" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
