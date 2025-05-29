@@ -10,7 +10,7 @@ def get_release() -> str:
     pkgid = subprocess.run(["cargo", "pkgid"], capture_output=True).stdout.decode().strip()
     release_start = pkgid.rfind("#") + 1
     pkglabel = pkgid[release_start:]
-    verlabel = pkglabel[pkglabel.rfind("@") + 1] if "@" in pkglabel else pkglabel
+    verlabel = pkglabel[pkglabel.rfind("@") + 1:] if "@" in pkglabel else pkglabel
     return verlabel
 
 
