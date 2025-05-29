@@ -85,6 +85,7 @@ instance/
 # Sphinx documentation
 docs/rust/crates
 docs/_build/
+docs/.cargo/
 
 # PyBuilder
 .pybuilder/
