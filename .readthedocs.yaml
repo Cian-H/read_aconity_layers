@@ -16,4 +16,4 @@ build:
     create_environment:
       - poetry install --with dev,docs
     install:
-      - PATH="$PATH:$HOME/.asdf/installs/rust/1.86.0/bin" just html_out $READTHEDOCS_OUTPUT
+      - PATH="$PATH:$HOME/.asdf/installs/rust/1.86.0/bin" just docs html_out $READTHEDOCS_OUTPUT
