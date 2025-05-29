@@ -9,7 +9,10 @@ def get_release() -> str:
     import subprocess
     pkgid = subprocess.run(["cargo", "pkgid"], capture_output=True).stdout.decode().strip()
     release_start = pkgid.rfind("#") + 1
-    return pkgid[release_start:]
+    pkglabel = pkgid[release_start:]
+    verlabel = pkglabel[pkglabel.rfind("@") + 1] if "@" in pkglabel else pkglabel
+    return verlabel
+
 
 project = "RAL"
 copyright = "2024, Cian Hughes"
