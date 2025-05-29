@@ -11,8 +11,8 @@ build:
       - asdf install poetry latest
       - asdf global poetry latest
       - asdf plugin add just
-      - asdf install poetry just
-      - asdf global poetry just
+      - asdf install just latest
+      - asdf global just latest
     create_environment:
       - poetry install --with dev,docs
     install:
