@@ -35,6 +35,9 @@ html sphinxbuild=_sphinxbuild sourcedir=_sourcedir builddir=_builddir sphinxopts
     @echo
     @echo "Build finished. The HTML pages are in {{builddir}}/html."
 
+# Build HTML for with a specific out directory
+html_out builddir=_builddir: (html _sphinxbuild _sourcedir builddir _sphinxopts)
+
 # Build and serve documentation locally
 serve sphinxbuild=_sphinxbuild sourcedir=_sourcedir builddir=_builddir sphinxopts=_sphinxopts: (html sphinxbuild sourcedir builddir sphinxopts)
     @echo "Serving documentation at http://localhost:8000"

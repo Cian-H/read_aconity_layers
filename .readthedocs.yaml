@@ -10,9 +10,10 @@ build:
       - asdf plugin add poetry
       - asdf install poetry latest
       - asdf global poetry latest
+      - asdf plugin add just
+      - asdf install poetry just
+      - asdf global poetry just
     create_environment:
-      - poetry lock
       - poetry install --with dev,docs
-      - poetry run maturin develop
     install:
-      - export PATH="$PATH:$HOME/.asdf/installs/rust/1.86.0/bin" && cargo install sphinx-rustdocgen && poetry run sphinx-build -b html docs $READTHEDOCS_OUTPUT/html
+      - PATH="$PATH:$HOME/.asdf/installs/rust/1.86.0/bin" just html_out $READTHEDOCS_OUTPUT
