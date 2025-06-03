@@ -33,16 +33,16 @@ jobs:
             echo "TAG_EXISTS=true" >> $GITHUB_ENV
           else
             echo "TAG_EXISTS=false" >> $GITHUB_ENV
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
           fi
 
       - name: Create and Push Git Tag
         if: env.TAG_EXISTS == 'false'
         run: |
-          VERSION=${{ fromJson(steps.info.outputs.object).package.version }}
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git tag "$VERSION"
-          git push origin "$VERSION"
+          git tag "${{ env.VERSION }}"
+          git push origin "${{ env.VERSION }}"
 
       - name: Trigger Release Workflow
         if: env.TAG_EXISTS == 'false'
@@ -54,5 +54,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: 'CI.yml',
-              ref: 'main'
+              ref: '${{ env.VERSION }}'  // <-- This is the key change!
             })
