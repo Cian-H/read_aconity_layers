@@ -12,9 +12,6 @@ license = { text = "MIT" }
 readme = "README.rst"
 dynamic = ["version"]
 
-[project.urls]
-github = "https://github.com/Cian-H/read_aconity_layers"
-
 [tool.poetry]
 name = "read_aconity_layers"
 description = "A utility for fast reading of layer data from the aconity mini powder bed fusion machine"
@@ -22,6 +19,11 @@ authors = ["Cian Hughes <chughes000@gmail.com>"]
 license = "MIT"
 readme = "README.rst"
 package-mode = false
+
+[tool.poetry.urls]
+repository = "https://github.com/Cian-H/read_aconity_layers"
+documentation = "https://read-aconity-layers.readthedocs.io/"
+
 
 [tool.poetry.dependencies]
 python = "^3.11"
