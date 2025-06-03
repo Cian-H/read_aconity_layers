@@ -6,7 +6,8 @@ on:
       - main
 
 permissions:
-  contents: write
+  actions: write
+  contents: read
 
 jobs:
   tag-version:
