@@ -2,6 +2,10 @@ version: 2
 updates:
   - package-ecosystem: "cargo"
     directory: "/"
+    groups:
+      rust-dependencies:
+        patterns:
+          - "*"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -17,6 +21,10 @@ updates:
 
   - package-ecosystem: "pip"
     directory: "/"
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -32,6 +40,10 @@ updates:
       include: "scope"
 
   - package-ecosystem: "github-actions"
+    groups:
+      action-dependencies:
+        patterns:
+          - "*"
     directory: "/"
     schedule:
       interval: "weekly"
