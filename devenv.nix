@@ -9,6 +9,7 @@
     act
     cargo-bump
     git
+    pre-commit
     ruff
   ];
 
