@@ -2,7 +2,7 @@ use ndarray::{ArrayBase, Ix2, OwnedRepr};
 use numpy::{PyArray2, ToPyArray};
 use pyo3::exceptions;
 use pyo3::prelude::*;
-use std::path::Path;
+use std::path::PathBuf;
 
 pub mod rust_fn;
 
@@ -60,10 +60,7 @@ fn read_selected_layers(
     _py: Python<'_>,
     file_list: Vec<String>,
 ) -> PyResult<Bound<'_, PyArray2<f64>>> {
-    let path_list = file_list
-        .iter()
-        .map(|x| Path::new(x).to_path_buf())
-        .collect();
+    let path_list = file_list.iter().map(PathBuf::from).collect();
     let rs_result = rust_fn::read_selected_layers(path_list)?;
     let py_result = rs_result.to_pyarray(_py);
     Ok(py_result)

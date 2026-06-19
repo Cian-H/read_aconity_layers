@@ -37,7 +37,7 @@ pub enum ReadError {
 pub type Result<T> = std::result::Result<T, ReadError>;
 
 pub fn read_layers(folder: &str) -> Result<Array2<f64>> {
-    let glob_string: String = folder.to_owned() + "/*.pcd";
+    let glob_string = format!("{}/*.pcd", folder);
     let mut glob_iterator = glob(glob_string.as_str())?
         .collect::<std::result::Result<Vec<PathBuf>, glob::GlobError>>()?;
     glob_iterator.par_sort_unstable_by(|a, b| {
@@ -107,7 +107,7 @@ pub fn read_selected_layers(file_list: Vec<PathBuf>) -> Result<Array2<f64>> {
         .zip(z_lens.par_iter_mut())
         .try_for_each(
             |(((filepath, array_element), z_vals_element), z_lens_element)| -> Result<()> {
-                let (array, z, z_len) = read_file(filepath.to_path_buf())?;
+                let (array, z, z_len) = read_file(filepath.clone())?;
                 *array_element = array;
                 *z_vals_element = z;
                 *z_lens_element = z_len;
@@ -361,7 +361,7 @@ mod tests {
             }
         }
 
-        if buffer.len() > 0 {
+        if !buffer.is_empty() {
             let flexbuf = Reader::get_root(buffer.as_slice())?;
             let ar: Array1<f64> = Array1::deserialize(flexbuf)?;
             Ok(ar)
