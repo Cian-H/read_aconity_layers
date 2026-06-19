@@ -11,43 +11,32 @@ authors = [{ name = "Cian Hughes", email = "chughes000@gmail.com" }]
 license = { text = "MIT" }
 readme = "README.rst"
 dynamic = ["version"]
+dependencies = [
+    "numpy>=2.0.0,<3.0.0",
+]
 
-[tool.poetry]
-name = "read_aconity_layers"
-description = "A utility for fast reading of layer data from the aconity mini powder bed fusion machine"
-authors = ["Cian Hughes <chughes000@gmail.com>"]
-license = "MIT"
-readme = "README.rst"
-package-mode = false
-
-[tool.poetry.urls]
+[project.urls]
 repository = "https://github.com/Cian-H/read_aconity_layers"
 documentation = "https://read-aconity-layers.readthedocs.io/"
 
-
-[tool.poetry.dependencies]
-python = "^3.11"
-maturin = "^1.8.6"
-numpy = ">=2.0.0,<3.0.0"
-
-[tool.poetry.group.dev.dependencies]
-ruff = ">=0.11.11,<0.16.0"
-mypy = ">=1.15,<3.0"
-pytest = ">=8.3.5,<10.0.0"
-loguru = "^0.7.3"
-pytest-cov = ">=6.1.1,<8.0.0"
-
-[tool.poetry.group.docs.dependencies]
-sphinx = "^8.2.3"
-sphinx-autodoc-typehints = "^3.2.0"
-sphinx-copybutton = "^0.5.2"
-sphinxcontrib-rust = ">=0.8.1,<1.2.0"
-myst-parser = "^4.0.1"
-sphinx-autobuild = ">=2024.10.3,<2026.0.0"
-pydata-sphinx-theme = ">=0.16.1,<0.20.0"
-
-[tool.poetry.requires-plugins]
-poetry-plugin-export = ">=1.8"
+[dependency-groups]
+dev = [
+    "ruff>=0.11.11,<0.16.0",
+    "ty>=0.0.51",
+    "pytest>=8.3.5,<10.0.0",
+    "loguru>=0.7.3",
+    "pytest-cov>=6.1.1,<8.0.0",
+    "maturin>=1.8.6",
+]
+docs = [
+    "sphinx>=8.2.3",
+    "sphinx-autodoc-typehints>=3.2.0",
+    "sphinx-copybutton>=0.5.2",
+    "sphinxcontrib-rust>=0.8.1,<1.2.0",
+    "myst-parser>=4.0.1",
+    "sphinx-autobuild>=2024.10.3,<2026.0.0",
+    "pydata-sphinx-theme>=0.16.1,<0.20.0",
+]
 
 [build-system]
 requires = ["maturin>=1.7,<2.0"]
@@ -217,11 +206,9 @@ max-complexity = 10
 [tool.ruff.lint.flake8-annotations]
 mypy-init-return = true
 
-[tool.mypy]
-check_untyped_defs = true
-ignore_missing_imports = true
-exclude = ["docs/", "tests/"]
+[tool.ty]
+[tool.ty.src]
+exclude = ["docs/"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = [".venv/bin/python"]

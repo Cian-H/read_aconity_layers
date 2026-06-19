@@ -14,7 +14,7 @@ Prerequisites
 
 -  Rust 1.70+ with Cargo
 -  Python 3.11+
--  Poetry
+-  uv
 -  Git
 
 Environment Setup
@@ -31,19 +31,19 @@ Environment Setup
 
    .. code:: bash
 
-      poetry install --with dev,docs
+      uv sync --group dev --group docs
 
 #. **Setup pre-commit hooks:**
 
    .. code:: bash
 
-      poetry run pre-commit install
+      uv run pre-commit install
 
 #. **Build the Rust extension:**
 
    .. code:: bash
 
-      poetry run maturin develop
+      uv run maturin develop
 
 ************************
  Code Style and Quality
@@ -55,7 +55,7 @@ Python Code
 ===========
 
 -  **Ruff**: For linting and formatting
--  **MyPy**: For type checking
+-  **ty**: For type checking
 -  **Pytest**: For testing
 
 Run quality checks:
@@ -63,14 +63,14 @@ Run quality checks:
 .. code:: bash
 
    # Format and lint Python code
-   poetry run ruff format .
-   poetry run ruff check .
+   uv run ruff format .
+   uv run ruff check .
 
    # Type checking
-   poetry run mypy .
+   uv run ty check
 
    # Run tests
-   poetry run pytest
+   uv run pytest
 
 Rust Code
 =========
@@ -105,10 +105,10 @@ Running Tests
 .. code:: bash
 
    # Run all tests
-   poetry run pytest
+   uv run pytest
 
    # Run with coverage
-   poetry run pytest --cov=read_aconity_layers
+   uv run pytest --cov=read_aconity_layers
 
    # Run Rust tests
    cargo test
@@ -144,14 +144,14 @@ Building Documentation
 .. code:: bash
 
    # Install documentation dependencies
-   poetry install --with docs
+   uv sync --group docs
 
    # Build documentation
    cd docs
    make html
 
    # Or build manually
-   poetry run sphinx-build -b html . _build/html
+   uv run sphinx-build -b html . _build/html
 
    # Serve locally (optional)
    make serve
@@ -199,9 +199,8 @@ The project uses pre-commit hooks that run automatically:
 
 -  Code formatting (Ruff, rustfmt)
 -  Linting (Ruff, Clippy)
--  Type checking (MyPy)
+-  Type checking (ty)
 -  Version bump validation
--  Poetry validation
 
 These checks must pass before commits are accepted.
 
@@ -253,7 +252,7 @@ Adding a New Function
 
 #. **Implement in Rust** (``src/rust_fn/mod.rs``)
 #. **Add Python binding** (``src/lib.rs``)
-#. **Update type stubs** (``read_layers.pyi``)
+#. **Update type stubs** (``read_aconity_layers.pyi``)
 #. **Add tests** for both Rust and Python
 #. **Update documentation**
 
@@ -262,8 +261,7 @@ Debugging Build Issues
 
 -  **Check Rust version**: Must be 1.70+
 -  **Verify PyO3 compatibility**: Should match Python version
--  **Clear build cache**: ``cargo clean`` and ``poetry env remove
-   --all``
+-  **Clear build cache**: ``cargo clean`` and ``rm -rf .venv``
 -  **Check dependencies**: Ensure all dev dependencies are installed
 
 Profiling Performance
