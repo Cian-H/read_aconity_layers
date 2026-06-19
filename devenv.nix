@@ -9,6 +9,7 @@
     act
     cargo-bump
     git
+    git-lfs
     pre-commit
     ruff
   ];
