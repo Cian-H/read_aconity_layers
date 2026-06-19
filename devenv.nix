@@ -25,7 +25,7 @@
 
   languages = {
     python = {
-      version = "3.13";
+      version = "3.14";
       enable = true;
       uv = {
         enable = true;
