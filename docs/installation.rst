@@ -28,7 +28,7 @@ Prerequisites
 
 -  Rust 1.70 or higher
 -  Python 3.11 or higher
--  Poetry (for development)
+-  uv (for development)
 
 Build Steps
 ===========
@@ -44,19 +44,19 @@ Build Steps
 
    .. code:: bash
 
-      poetry install
+      uv sync
 
 #. Build the Rust extension:
 
    .. code:: bash
 
-      poetry run maturin develop
+      uv run maturin develop
 
 #. Run tests to verify installation:
 
    .. code:: bash
 
-      poetry run pytest
+      uv run pytest
 
 **************************
  Development Installation
@@ -66,12 +66,12 @@ For development work, you'll also want the development dependencies:
 
 .. code:: bash
 
-   poetry install --with dev,docs
+   uv sync --group dev --group docs
 
 This installs additional tools for:
 
 -  Code formatting (ruff)
--  Type checking (mypy)
+-  Type checking (ty)
 -  Testing (pytest)
 -  Documentation building (sphinx)
 

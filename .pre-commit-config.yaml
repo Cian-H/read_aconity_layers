@@ -1,67 +1,56 @@
 default_language_version:
-  python: python3.12
+  python: python3.13
 
 repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.11
-    hooks:
-      - id: ruff
-        types: [python]
-        exclude: docs/
-      - id: ruff-format
-        types: [python]
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.15.0
-    hooks:
-      - id: mypy
-        types: [python]
-        exclude: docs/
-
   - repo: https://github.com/doublify/pre-commit-rust
     rev: v1.0
     hooks:
-    - id: fmt
-    - id: cargo-check
+      - id: fmt
+      - id: cargo-check
 
-  - repo: https://github.com/python-poetry/poetry
-    rev: "2.1.3"
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.11.22
     hooks:
-    - id: poetry-check
-    - id: poetry-install
-    - id: poetry-lock
+      - id: uv-lock
+      - id: uv-export
 
-  - repo: https://github.com/python-poetry/poetry-plugin-export
-    rev: 1.9.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.18
     hooks:
-    - id: poetry-export
-      args: ["-f", "requirements.txt", "-o", "./requirements.txt"]
+      - id: ruff-check
+        exclude: docs/
+      - id: ruff-format
 
-  - repo: local
+  - repo: https://github.com/astral-sh/ty-pre-commit
+    rev: v0.0.51
     hooks:
-    - id: build-readme
-      name: build-readme
-      entry: |
-        bash -c 'cat docs/readme_top.rst docs/readme_bottom.rst > README.rst'
-      language: system
-      files: 'docs/readme*.rst'
+      - id: ty
 
   - repo: local
     hooks:
-    - id: version-bump-check
-      name: version-bump-check
-      entry: |
-        bash -c '
-          current_version=$(grep "^version = " Cargo.toml | sed "s/version = \"\(.*\)\"/\1/");
-          git fetch origin main 2>/dev/null || true;
-          remote_version=$(git show origin/main:Cargo.toml 2>/dev/null | grep "^version = " | sed "s/version = \"\(.*\)\"/\1/" || echo "0.0.0");
-          if [ "$current_version" = "$remote_version" ]; then
-            echo "❌ Version must be bumped before push! Run: cargo bump patch|minor|major";
-            echo "Local: $current_version, Remote: $remote_version";
-            exit 1;
-          fi;
-          echo "✅ Version bumped: $remote_version -> $current_version"
-        '
-      language: system
-      files: 'Cargo\.toml$'
-      stages: [pre-push]
+      - id: build-readme
+        name: build-readme
+        entry: |
+          bash -c 'cat docs/readme_top.rst docs/readme_bottom.rst > README.rst'
+        language: system
+        files: "docs/readme*.rst"
+
+  - repo: local
+    hooks:
+      - id: version-bump-check
+        name: version-bump-check
+        entry: |
+          bash -c '
+            current_version=$(grep "^version = " Cargo.toml | sed "s/version = \"\(.*\)\"/\1/");
+            git fetch origin main 2>/dev/null || true;
+            remote_version=$(git show origin/main:Cargo.toml 2>/dev/null | grep "^version = " | sed "s/version = \"\(.*\)\"/\1/" || echo "0.0.0");
+            if [ "$current_version" = "$remote_version" ]; then
+              echo "❌ Version must be bumped before push! Run: cargo bump patch|minor|major";
+              echo "Local: $current_version, Remote: $remote_version";
+              exit 1;
+            fi;
+            echo "✅ Version bumped: $remote_version -> $current_version"
+          '
+        language: system
+        files: 'Cargo\.toml$'
+        stages: [pre-push]

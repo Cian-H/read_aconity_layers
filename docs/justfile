@@ -1,7 +1,7 @@
 # Justfile for Sphinx documentation
 
 _sphinxopts := ""
-_sphinxbuild := "poetry run sphinx-build"
+_sphinxbuild := "uv run sphinx-build"
 _sourcedir := "."
 _builddir := "./_build"
 
@@ -23,7 +23,7 @@ ensure-rustdocgen:
 build-extension:
     @echo "Checking Rust toolchain..."
     @which cargo > /dev/null || (echo "Error: Rust/Cargo not found. Please install Rust toolchain." && exit 1)
-    cd .. && poetry run maturin develop
+    cd .. && uv run maturin develop
 
 # Clean build directory
 clean builddir=_builddir:
@@ -45,7 +45,7 @@ serve sphinxbuild=_sphinxbuild sourcedir=_sourcedir builddir=_builddir sphinxopt
 
 # Build documentation with live reload (requires sphinx-autobuild)
 livehtml sourcedir=_sourcedir builddir=_builddir sphinxopts=_sphinxopts: ensure-rustdocgen build-extension
-    poetry run sphinx-autobuild "{{sourcedir}}" "{{builddir}}/html" {{sphinxopts}}
+    uv run sphinx-autobuild "{{sourcedir}}" "{{builddir}}/html" {{sphinxopts}}
 
 # Check for broken links
 linkcheck sphinxbuild=_sphinxbuild sourcedir=_sourcedir builddir=_builddir sphinxopts=_sphinxopts:

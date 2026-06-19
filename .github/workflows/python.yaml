@@ -9,15 +9,14 @@ on:
 jobs:
   build-python:
 
-    name: Build python package for ${{ matrix.os }} with Python ${{ matrix.python-version }} via Poetry ${{ matrix.poetry-version }}
+    name: Build python package for ${{ matrix.os }} with Python ${{ matrix.python-version }} via uv
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
-        os: [ubuntu-latest, windows-latest]
-        poetry-version: ["latest"]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v5
@@ -25,28 +24,25 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Set up uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        enable-cache: true
     - name: Install Act dependencies
       if: ${{ env.ACT }}
       run: |
         apt-get update && apt-get install sudo -y cargo
-    - name: Run poetry image
-      uses: abatilo/actions-poetry@v4
-      with:
-        poetry-version: ${{ matrix.poetry-version }}
-    - name: Ensure lockfile is updated
-      run: |
-        poetry lock
     - name: Install python dependencies
       run: |
-        poetry install
+        uv sync --group dev
     - name: Build rust package
       run: |
-        poetry run maturin develop
+        uv run maturin develop
     - name: Test with pytest
       env:
         PYTEST_ADDOPTS: "--cov read_aconity_layers --cov-report=lcov"
       run: |
-        poetry run pytest
+        uv run pytest
 
     - name: Upload coverage to Coveralls
       uses: coverallsapp/github-action@master

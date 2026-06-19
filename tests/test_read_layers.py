@@ -34,11 +34,11 @@ def write_layers_to_dir(dir_path):
 # Sorts arrays without mixing datapoints
 # This is needed because we dont need to guarantee read order
 def sort_result(ar):
-    ar = ar[ar[:, 4].argsort()]
-    ar = ar[ar[:, 3].argsort()]
-    ar = ar[ar[:, 0].argsort()]
-    ar = ar[ar[:, 1].argsort()]
-    ar = ar[ar[:, 2].argsort()]
+    ar = ar[ar[:, 4].argsort(kind='stable')]
+    ar = ar[ar[:, 3].argsort(kind='stable')]
+    ar = ar[ar[:, 0].argsort(kind='stable')]
+    ar = ar[ar[:, 1].argsort(kind='stable')]
+    ar = ar[ar[:, 2].argsort(kind='stable')]
     return ar
 
 

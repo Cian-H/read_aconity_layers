@@ -7,13 +7,13 @@ build:
     rust: "1.86"
   jobs:
     pre_create_environment:
-      - asdf plugin add poetry
-      - asdf install poetry latest
-      - asdf global poetry latest
+      - asdf plugin add uv
+      - asdf install uv latest
+      - asdf global uv latest
       - asdf plugin add just
       - asdf install just latest
       - asdf global just latest
     create_environment:
-      - poetry install --with dev,docs
+      - uv sync --group dev --group docs
     install:
       - PATH="$PATH:$HOME/.asdf/installs/rust/1.86.0/bin" just docs html_out $READTHEDOCS_OUTPUT
