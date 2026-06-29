@@ -3,9 +3,17 @@ updates:
   - package-ecosystem: "cargo"
     directory: "/"
     groups:
-      rust-dependencies:
+      rust-major:
         patterns:
           - "*"
+        update-types:
+          - "major"
+      rust-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -22,9 +30,17 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     groups:
-      python-dependencies:
+      python-major:
         patterns:
           - "*"
+        update-types:
+          - "major"
+      python-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -41,9 +57,17 @@ updates:
 
   - package-ecosystem: "github-actions"
     groups:
-      action-dependencies:
+      action-major:
         patterns:
           - "*"
+        update-types:
+          - "major"
+      action-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
     directory: "/"
     schedule:
       interval: "weekly"
