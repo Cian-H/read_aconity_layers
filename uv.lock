@@ -744,17 +744,17 @@ dev = [
     { name = "maturin", specifier = ">=1.8.6" },
     { name = "pytest", specifier = ">=8.3.5,<10.0.0" },
     { name = "pytest-cov", specifier = ">=6.1.1,<8.0.0" },
-    { name = "ruff", specifier = ">=0.11.11,<0.16.0" },
+    { name = "ruff", specifier = ">=0.11.11,<0.17.0" },
     { name = "ty", specifier = ">=0.0.51" },
 ]
 docs = [
     { name = "myst-parser", specifier = ">=4.0.1" },
-    { name = "pydata-sphinx-theme", specifier = ">=0.16.1,<0.20.0" },
+    { name = "pydata-sphinx-theme", specifier = ">=0.16.1,<0.21.0" },
     { name = "sphinx", specifier = ">=8.2.3" },
     { name = "sphinx-autobuild", specifier = ">=2024.10.3,<2026.0.0" },
     { name = "sphinx-autodoc-typehints", specifier = ">=3.2.0" },
     { name = "sphinx-copybutton", specifier = ">=0.5.2" },
-    { name = "sphinxcontrib-rust", specifier = ">=0.8.1,<1.2.0" },
+    { name = "sphinxcontrib-rust", specifier = ">=0.8.1,<1.3.0" },
 ]
 
 [[package]]
